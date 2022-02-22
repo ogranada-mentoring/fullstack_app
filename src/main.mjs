@@ -1,7 +1,9 @@
 import { config } from 'dotenv';
 import express from 'express';
 import nunjucks from 'nunjucks';
+import { assemblePaths } from './common/docTools.mjs';
 import { Logger } from './common/logger.mjs';
+import { getRouter as getGeneralRouter } from './controllers/routers/general.mjs';
 import { connect, getProducts } from './model/index.mjs';
 
 async function main() {
@@ -13,6 +15,10 @@ async function main() {
   if (connected) {
     const server = express();
 
+    const routers = {
+      general: getGeneralRouter(),
+    };
+    assemblePaths('./openapi.yml', '/api/v1', routers, server);
     nunjucks.configure('src/views', {
       autoescape: true,
       express: server,
