@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  database:
+    image: mongo
+    ports:
+      - "27017:27017"
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+  dbui:
+    image: mongo-express
+    restart: always
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=database
+      - ME_CONFIG_MONGODB_AUTH_DATABASE=delailah
+    ports:
+      - "8081:8081"
+    depends_on:
+      - database
