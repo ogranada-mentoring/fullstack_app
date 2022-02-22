@@ -18,28 +18,10 @@ export function getDocsData(filename) {
   });
 }
 
-export async function assemblePaths(filename, prefix, routers, server) {
+export async function assemblePaths(filename, prefix, server) {
   const data = await getDocsData(filename);
   Logger.log(`Docs at ${prefix}/docs`);
   server.use(`${prefix}/docs`, swaggerUi.serve, swaggerUi.setup(data));
-  const paths = Object.keys(data.paths);
-  paths.forEach((path) => {
-    const pathInfo = data.paths[path];
-    const methods = Object.keys(pathInfo);
-    methods.forEach((method) => {
-      const methodInfo = pathInfo[method];
-      const router = methodInfo.operationId;
-      if (routers[router][path]) {
-        const finalPath = `${prefix}${path}`;
-        server[method](finalPath, routers[router][path]);
-      } else {
-        const finalPath = `${prefix}${path}`;
-        server[method](finalPath, (req, res) => {
-          res.status(404).send('Invalid path, not implemented');
-        });
-      }
-    });
-  });
 }
 
 export default {
